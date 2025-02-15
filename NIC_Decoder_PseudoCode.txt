@@ -1,0 +1,47 @@
+BEGIN
+    PRINT "Enter NIC Number"
+    INPUT nic
+
+    // Step 1: Identify Format
+    IF length(nic) == 10 THEN
+        format = "Old NIC"
+        year = "19" + nic[0:2]  // Extract last two digits and add "19"
+        day_code = int(nic[2:5]) // Extract 3-digit day number
+        voter_status = nic[9]    // Last character is voter eligibility
+    ELSE IF length(nic) == 12 THEN
+        format = "New NIC"
+        year = nic[0:4]         // Extract full 4-digit year
+        day_code = int(nic[4:7]) // Extract 3-digit day number
+    ELSE
+        PRINT "Invalid NIC format"
+        EXIT
+    ENDIF
+
+    // Step 2: Determine Gender
+    IF day_code > 500 THEN
+        gender = "Female"
+        day_code = day_code - 500
+    ELSE
+        gender = "Male"
+    ENDIF
+
+    // Step 3: Convert Day Code to Date
+    dob = CalculateDate(year, day_code)
+
+    // Step 4: Find Weekday
+    weekday = GetWeekday(dob)
+
+    // Step 5: Calculate Age
+    age = CurrentYear - year
+
+    // Step 6: Display Results
+    PRINT "NIC Format: ", format
+    PRINT "Date of Birth: ", dob
+    PRINT "Weekday: ", weekday
+    PRINT "Age: ", age
+    PRINT "Gender: ", gender
+    IF format == "Old NIC" THEN
+        PRINT "Voter Eligibility: ", voter_status
+    ENDIF
+
+END
